@@ -1,16 +1,15 @@
 import UserModel from "../Mongo/Schema/UserSchema.js";
 
-export const getAllUsers = (req, res) => {
-  const users = UserModel.find({});
+export const getAllUsers = async (req, res) => {
+  const users = await UserModel.find({});
   res.status(200).send(users);
 };
 
-export const createUser = (req, res) => {
+export const createUser = async (req, res) => {
   const payLoad = req.body;
   const { name, age } = payLoad;
-  const user = UserModel.findOne().limit(1).sort({ _id: -1 });
-  console.log(user);
-  const generatedUserId = user.userId ? user.userId + 1 : 1;
-  const createdUser = UserModel.create({ userId: generatedUserId, name, age });
+  const user = await UserModel.findOne().sort({$natural : -1});
+  const generatedUserId = user?.userId ? user.userId + 1 : 1;
+  const createdUser = await UserModel.create({ userId: generatedUserId, name, age });
   res.status(200).send(createdUser);
 };
